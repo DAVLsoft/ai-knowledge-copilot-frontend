@@ -1,6 +1,10 @@
 import { LoginForm } from "../organisms/LoginForm/LoginForm";
-import { LoginTemplate } from "../templates/LoginTemplate";
+import { AuthTemplate } from "../templates/AuthTemplate";
 
 export const LoginPage = () => {
-  return <LoginTemplate loginForm={<LoginForm />} />;
+  return (
+    <AuthTemplate>
+      <LoginForm />
+    </AuthTemplate>
+  );
 };

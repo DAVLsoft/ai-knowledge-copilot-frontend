@@ -19,14 +19,19 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import {
+  InputGroup,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
-type SignUpFormValues = {
+type RegisterFormValues = {
   identifier: string;
   password: string;
   confirmPassword: string;
 };
 
-export const SignUpForm = ({
+export const RegisterForm = ({
   className,
   ...props
 }: React.ComponentProps<"div">) => {
@@ -38,7 +43,7 @@ export const SignUpForm = ({
     getValues,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignUpFormValues>({
+  } = useForm<RegisterFormValues>({
     defaultValues: {
       identifier: "",
       password: "",
@@ -46,7 +51,7 @@ export const SignUpForm = ({
     },
   });
 
-  const onSubmit = async (data: SignUpFormValues) => {
+  const onSubmit = async (data: RegisterFormValues) => {
     console.log(data);
   };
 
@@ -62,7 +67,7 @@ export const SignUpForm = ({
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
-              <Field>
+              <Field data-invalid={errors.identifier ? true : undefined}>
                 <FieldLabel htmlFor="identifier">Username or Email</FieldLabel>
                 <Input
                   id="identifier"
@@ -75,20 +80,25 @@ export const SignUpForm = ({
                     setValueAs: (value: string) => value.trim(),
                   })}
                   placeholder="Enter your email or username"
+                  aria-invalid={errors.identifier ? true : undefined}
+                  aria-describedby={
+                    errors.identifier ? "identifier-error" : undefined
+                  }
                 />
                 {errors.identifier && (
-                  <FieldError>{errors.identifier.message}</FieldError>
+                  <FieldError id="identifier-error">
+                    {errors.identifier.message}
+                  </FieldError>
                 )}
               </Field>
-              <Field>
+              <Field data-invalid={errors.password ? true : undefined}>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                 </div>
-                <div className="relative">
-                  <Input
+                <InputGroup>
+                  <InputGroupInput
                     id="password"
                     type={showPassword ? "text" : "password"}
-                    className="pr-10"
                     {...register("password", {
                       required: "Password is required",
                       minLength: {
@@ -98,34 +108,40 @@ export const SignUpForm = ({
                       deps: "confirmPassword",
                     })}
                     placeholder="Enter your password"
+                    aria-invalid={errors.password ? true : undefined}
+                    aria-describedby={
+                      errors.password
+                        ? "password-error"
+                        : "password-description"
+                    }
                   />
-                  <Button
+                  <InputGroupButton
                     type="button"
-                    variant="ghost"
                     size="icon-sm"
-                    className="absolute right-1 translate-0.5"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
                     aria-controls="password"
-                    onClick={() => setShowPassword((visible) => !visible)}
+                    onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
                       <EyeOff aria-hidden="true" />
                     ) : (
                       <Eye aria-hidden="true" />
                     )}
-                  </Button>
-                </div>
+                  </InputGroupButton>
+                </InputGroup>
                 {errors.password ? (
-                  <FieldError>{errors.password.message}</FieldError>
+                  <FieldError id="password-error">
+                    {errors.password.message}
+                  </FieldError>
                 ) : (
-                  <FieldDescription>
+                  <FieldDescription id="password-description">
                     Must be at least 8 characters long.
                   </FieldDescription>
                 )}
               </Field>
-              <Field>
+              <Field data-invalid={errors.confirmPassword ? true : undefined}>
                 <FieldLabel htmlFor="confirm-password">
                   Confirm Password
                 </FieldLabel>
@@ -139,11 +155,19 @@ export const SignUpForm = ({
                       "Passwords do not match",
                   })}
                   placeholder="Re-enter your password"
+                  aria-invalid={errors.confirmPassword ? true : undefined}
+                  aria-describedby={
+                    errors.confirmPassword
+                      ? "confirm-password-error"
+                      : "confirm-password-description"
+                  }
                 />
                 {errors.confirmPassword ? (
-                  <FieldError>{errors.confirmPassword.message}</FieldError>
+                  <FieldError id="confirm-password-error">
+                    {errors.confirmPassword.message}
+                  </FieldError>
                 ) : (
-                  <FieldDescription>
+                  <FieldDescription id="confirm-password-description">
                     Please confirm your password.
                   </FieldDescription>
                 )}
@@ -153,7 +177,7 @@ export const SignUpForm = ({
                   {isSubmitting ? "Signing up..." : "Sign up"}
                 </Button>
                 <FieldDescription className="text-center">
-                  Have an account? <Link to="/log-in">Log in</Link>
+                  Have an account? <Link to="/login">Log in</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

@@ -19,6 +19,11 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
+import {
+  InputGroup,
+  InputGroupButton,
+  InputGroupInput,
+} from "@/components/ui/input-group";
 
 type LoginFormValues = {
   identifier: string;
@@ -59,7 +64,7 @@ export const LoginForm = ({
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
-              <Field>
+              <Field data-invalid={errors.identifier ? true : undefined}>
                 <FieldLabel htmlFor="identifier">Username or Email</FieldLabel>
                 <Input
                   id="identifier"
@@ -72,17 +77,23 @@ export const LoginForm = ({
                     setValueAs: (value: string) => value.trim(),
                   })}
                   placeholder="Enter your email or username"
+                  aria-invalid={errors.identifier ? true : undefined}
+                  aria-describedby={
+                    errors.identifier ? "identifier-error" : undefined
+                  }
                 />
                 {errors.identifier && (
-                  <FieldError>{errors.identifier.message}</FieldError>
+                  <FieldError id="identifier-error">
+                    {errors.identifier.message}
+                  </FieldError>
                 )}
               </Field>
-              <Field>
+              <Field data-invalid={errors.password ? true : undefined}>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                 </div>
-                <div className="relative">
-                  <Input
+                <InputGroup>
+                  <InputGroupInput
                     id="password"
                     type={showPassword ? "text" : "password"}
                     className="pr-10"
@@ -94,27 +105,31 @@ export const LoginForm = ({
                       },
                     })}
                     placeholder="Enter your password"
+                    aria-invalid={errors.password ? true : undefined}
+                    aria-describedby={
+                      errors.password ? "password-error" : undefined
+                    }
                   />
-                  <Button
+                  <InputGroupButton
                     type="button"
-                    variant="ghost"
                     size="icon-sm"
-                    className="absolute right-1 translate-0.5"
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
                     aria-controls="password"
-                    onClick={() => setShowPassword((visible) => !visible)}
+                    onClick={() => setShowPassword(!showPassword)}
                   >
                     {showPassword ? (
                       <EyeOff aria-hidden="true" />
                     ) : (
                       <Eye aria-hidden="true" />
                     )}
-                  </Button>
-                </div>
+                  </InputGroupButton>
+                </InputGroup>
                 {errors.password && (
-                  <FieldError>{errors.password.message}</FieldError>
+                  <FieldError id="password-error">
+                    {errors.password.message}
+                  </FieldError>
                 )}
               </Field>
               <Field>
@@ -122,7 +137,8 @@ export const LoginForm = ({
                   {isSubmitting ? "Signing in..." : "Sign in"}
                 </Button>
                 <FieldDescription className="text-center">
-                  Don&apos;t have an account? <Link to="/sign-up">Sign up</Link>
+                  Don&apos;t have an account?{" "}
+                  <Link to="/register">Sign up</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
