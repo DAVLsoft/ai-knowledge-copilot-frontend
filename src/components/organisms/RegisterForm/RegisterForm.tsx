@@ -68,9 +68,10 @@ export const RegisterForm = ({
           <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field data-invalid={errors.identifier ? true : undefined}>
-                <FieldLabel htmlFor="identifier">Username or Email</FieldLabel>
+                <FieldLabel htmlFor="identifier">Username</FieldLabel>
                 <Input
                   id="identifier"
+                  type="text"
                   {...register("identifier", {
                     required: "Username or email is required",
                     minLength: {
@@ -78,17 +79,34 @@ export const RegisterForm = ({
                       message: "Must be at least 3 characters",
                     },
                     setValueAs: (value: string) => value.trim(),
+                    validate: (value) => {
+                      if (value.includes("@")) {
+                        return (
+                          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
+                          "Enter a valid email address"
+                        );
+                      }
+
+                      return (
+                        /^[a-zA-Z0-9_]{3,}$/.test(value) ||
+                        "Username must be at least 3 characters"
+                      );
+                    },
                   })}
-                  placeholder="Enter your email or username"
+                  placeholder="Enter your username or email address"
                   aria-invalid={errors.identifier ? true : undefined}
                   aria-describedby={
                     errors.identifier ? "identifier-error" : undefined
                   }
                 />
-                {errors.identifier && (
+                {errors.identifier ? (
                   <FieldError id="identifier-error">
                     {errors.identifier.message}
                   </FieldError>
+                ) : (
+                  <FieldDescription id="identifier-description">
+                    You can use either your username or email address.
+                  </FieldDescription>
                 )}
               </Field>
               <Field data-invalid={errors.password ? true : undefined}>
@@ -104,6 +122,17 @@ export const RegisterForm = ({
                       minLength: {
                         value: 8,
                         message: "Must be at least 8 characters",
+                      },
+                      validate: (value) => {
+                        if (!/[A-Z]/.test(value)) {
+                          return "Must include at least one uppercase letter";
+                        }
+
+                        if (!/[^A-Za-z0-9\s]/.test(value)) {
+                          return "Must include at least one symbol";
+                        }
+
+                        return true;
                       },
                       deps: "confirmPassword",
                     })}
@@ -137,7 +166,8 @@ export const RegisterForm = ({
                   </FieldError>
                 ) : (
                   <FieldDescription id="password-description">
-                    Must be at least 8 characters long.
+                    Must be at least 8 characters long and include an uppercase
+                    letter and a symbol.
                   </FieldDescription>
                 )}
               </Field>

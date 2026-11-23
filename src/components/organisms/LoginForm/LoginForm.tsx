@@ -65,7 +65,7 @@ export const LoginForm = ({
           <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               <Field data-invalid={errors.identifier ? true : undefined}>
-                <FieldLabel htmlFor="identifier">Username or Email</FieldLabel>
+                <FieldLabel htmlFor="identifier">Username</FieldLabel>
                 <Input
                   id="identifier"
                   {...register("identifier", {
@@ -75,6 +75,19 @@ export const LoginForm = ({
                       message: "Must be at least 3 characters",
                     },
                     setValueAs: (value: string) => value.trim(),
+                    validate: (value) => {
+                      if (value.includes("@")) {
+                        return (
+                          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
+                          "Enter a valid email address"
+                        );
+                      }
+
+                      return (
+                        /^[a-zA-Z0-9_]{3,}$/.test(value) ||
+                        "Username must be at least 3 characters"
+                      );
+                    },
                   })}
                   placeholder="Enter your email or username"
                   aria-invalid={errors.identifier ? true : undefined}
@@ -102,6 +115,17 @@ export const LoginForm = ({
                       minLength: {
                         value: 8,
                         message: "Must be at least 8 characters",
+                      },
+                      validate: (value) => {
+                        if (!/[A-Z]/.test(value)) {
+                          return "Must include at least one uppercase letter";
+                        }
+
+                        if (!/[^A-Za-z0-9\s]/.test(value)) {
+                          return "Must include at least one symbol";
+                        }
+
+                        return true;
                       },
                     })}
                     placeholder="Enter your password"
