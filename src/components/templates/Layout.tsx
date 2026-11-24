@@ -1,15 +1,14 @@
-import { SidebarProvider } from "@/components/ui/sidebar";
+import { Outlet } from "react-router-dom";
 import { AppSidebar } from "@/components/organisms/Sidebar/Sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default function AppLayout() {
   return (
     <SidebarProvider>
       <AppSidebar collapsible="icon" />
-
-      <main>
-        {/* <SidebarTrigger /> */}
-        {children}
-      </main>
+      <SidebarInset>
+        <Outlet />
+      </SidebarInset>
     </SidebarProvider>
   );
 }

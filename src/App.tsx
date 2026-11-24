@@ -1,12 +1,17 @@
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import AppLayout from "./components/templates/Layout";
+import { DocumentsPage } from "./pages/DocumentsPage";
 
 const App = () => {
   return (
-    <>
-      <AppLayout>
-        <p>Welcome to the AI Knowledge Copilot!</p>
-      </AppLayout>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route index element={<Navigate to="/documents" replace />} />
+          <Route path="documents" element={<DocumentsPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 };
 

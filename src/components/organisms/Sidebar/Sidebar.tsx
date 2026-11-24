@@ -1,10 +1,11 @@
 "use client";
 import * as React from "react";
+import { Link } from "react-router-dom";
 
 import { Logo } from "@/components/atoms/Logo";
-import { NavMain } from "@/components/nav-main";
-import { NavTheme } from "@/components/nav-theme";
-import { NavUser } from "@/components/nav-user";
+import { NavMain } from "@/components/molecules/Navigation";
+import { NavTheme } from "@/components/molecules/Theme";
+import { NavUser } from "@/components/molecules/UserProfile";
 import {
   Sidebar,
   SidebarContent,
@@ -27,7 +28,7 @@ const data = {
   navMain: [
     {
       title: "Documents",
-      url: "#",
+      url: "/documents",
       icon: File,
     },
     {
@@ -85,7 +86,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              render={<a href="/" aria-label="Acme Inc. home" />}
+              render={<Link to="/" aria-label="Acme Inc. home" />}
               className="group-data-[collapsible=icon]:p-0!"
             >
               <Logo className="shrink-0" />
