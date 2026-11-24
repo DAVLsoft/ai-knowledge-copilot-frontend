@@ -1,10 +1,11 @@
-import { Button } from "@/components/ui/button";
+import AppLayout from "./components/templates/Layout";
 
 const App = () => {
   return (
     <>
-      <h1>AI Knowledge Copilot Frontend</h1>
-      <Button>Click me</Button>
+      <AppLayout>
+        <p>Welcome to the AI Knowledge Copilot!</p>
+      </AppLayout>
     </>
   );
 };
