@@ -1,11 +1,14 @@
-import { Button } from "@/components/ui/button";
+import { Route, Routes } from "react-router-dom";
+import { LoginPage } from "./components/pages/LoginPage";
+import { RegisterPage } from "./components/pages/RegisterPage";
 
 const App = () => {
   return (
-    <>
-      <h1>AI Knowledge Copilot Frontend</h1>
-      <Button>Click me</Button>
-    </>
+    <Routes>
+      <Route path="/" element={<LoginPage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/register" element={<RegisterPage />} />
+    </Routes>
   );
 };
 
