@@ -40,7 +40,6 @@ export const RegisterForm = ({
   // Initialize the form using react-hook-form
   const {
     register,
-    handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     defaultValues: {
@@ -67,7 +66,7 @@ export const RegisterForm = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(() => console.log("Clicked"))}>
+          <form>
             <FieldGroup>
               <Field
                 className="gap-2"
@@ -111,7 +110,7 @@ export const RegisterForm = ({
                     required: "Username is required",
                     minLength: {
                       value: 4,
-                      message: "Username must be at least 8 characters",
+                      message: "Username must be at least 4 characters",
                     },
                     setValueAs: (value: string) => value.trim(),
                     pattern: {

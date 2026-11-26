@@ -39,7 +39,6 @@ export const LoginForm = ({
   // Initialize the form using react-hook-form
   const {
     register,
-    handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<LoginFormValues>({
     defaultValues: {
@@ -65,7 +64,7 @@ export const LoginForm = ({
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(() => console.log("Clicked"))}>
+          <form>
             <FieldGroup>
               <Field
                 className="gap-2"
@@ -170,7 +169,7 @@ export const LoginForm = ({
               </Field>
               <Field>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Loging in ..." : "Log in"}
+                  {isSubmitting ? "Logging in ..." : "Log in"}
                 </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
