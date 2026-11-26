@@ -26,9 +26,9 @@ import {
 } from "@/components/ui/input-group";
 
 type RegisterFormValues = {
-  identifier: string;
+  email: string;
+  username: string;
   password: string;
-  confirmPassword: string;
 };
 
 export const RegisterForm = ({
@@ -40,76 +40,102 @@ export const RegisterForm = ({
   // Initialize the form using react-hook-form
   const {
     register,
-    getValues,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     defaultValues: {
-      identifier: "",
+      email: "",
+      username: "",
       password: "",
-      confirmPassword: "",
     },
   });
-
-  const onSubmit = async (data: RegisterFormValues) => {
-    console.log(data);
-  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
-        <CardHeader>
-          <CardTitle>Create an account</CardTitle>
-          <CardDescription>
-            Enter your information below to create your account
+        <CardHeader className="items-center gap-2">
+          <img
+            className="m-auto h-10 w-10 rounded-md"
+            src="/Logo.webp"
+            alt="Logo"
+          />
+          <CardTitle className="text-center text-xl">
+            Create your account
+          </CardTitle>
+          <CardDescription className="text-center">
+            Enter your username, email, and password to get started.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(() => console.log("Clicked"))}>
             <FieldGroup>
-              <Field data-invalid={errors.identifier ? true : undefined}>
-                <FieldLabel htmlFor="identifier">Username</FieldLabel>
+              <Field
+                className="gap-2"
+                data-invalid={errors.email ? true : undefined}
+              >
+                <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
-                  id="identifier"
-                  type="text"
-                  {...register("identifier", {
-                    required: "Username or email is required",
-                    minLength: {
-                      value: 3,
-                      message: "Must be at least 3 characters",
-                    },
+                  id="email"
+                  type="email"
+                  {...register("email", {
+                    required: "Email is required",
                     setValueAs: (value: string) => value.trim(),
                     validate: (value) => {
-                      if (value.includes("@")) {
-                        return (
-                          /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
-                          "Enter a valid email address"
-                        );
-                      }
-
                       return (
-                        /^[a-zA-Z0-9_]{3,}$/.test(value) ||
-                        "Username must be at least 3 characters"
+                        /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ||
+                        "Enter a valid email address"
                       );
                     },
                   })}
-                  placeholder="Enter your username or email address"
-                  aria-invalid={errors.identifier ? true : undefined}
+                  placeholder="Enter your email address"
+                  aria-invalid={errors.email ? true : undefined}
                   aria-describedby={
-                    errors.identifier ? "identifier-error" : undefined
+                    errors.email ? "email-error" : "email-description"
                   }
                 />
-                {errors.identifier ? (
-                  <FieldError id="identifier-error">
-                    {errors.identifier.message}
+                {errors.email && (
+                  <FieldError id="email-error">
+                    {errors.email.message}
                   </FieldError>
-                ) : (
-                  <FieldDescription id="identifier-description">
-                    You can use either your username or email address.
-                  </FieldDescription>
                 )}
               </Field>
-              <Field data-invalid={errors.password ? true : undefined}>
+              <Field
+                className="gap-2"
+                data-invalid={errors.username ? true : undefined}
+              >
+                <FieldLabel htmlFor="username">Username</FieldLabel>
+                <Input
+                  id="username"
+                  type="text"
+                  {...register("username", {
+                    required: "Username is required",
+                    minLength: {
+                      value: 4,
+                      message: "Username must be at least 8 characters",
+                    },
+                    setValueAs: (value: string) => value.trim(),
+                    pattern: {
+                      value: /^[a-zA-Z0-9_]{4,}$/,
+                      message:
+                        "Use at least 4 letters, numbers, or underscores",
+                    },
+                  })}
+                  placeholder="Enter your username"
+                  aria-invalid={errors.username ? true : undefined}
+                  aria-describedby={
+                    errors.username ? "username-error" : "username-description"
+                  }
+                />
+                {errors.username && (
+                  <FieldError id="username-error">
+                    {errors.username.message}
+                  </FieldError>
+                )}
+              </Field>
+              <Field
+                className="gap-2"
+                data-invalid={errors.password ? true : undefined}
+              >
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                 </div>
@@ -117,11 +143,13 @@ export const RegisterForm = ({
                   <InputGroupInput
                     id="password"
                     type={showPassword ? "text" : "password"}
+                    className="pr-10"
                     {...register("password", {
                       required: "Password is required",
                       minLength: {
                         value: 8,
-                        message: "Must be at least 8 characters",
+                        message:
+                          "The password must contain at least 8 characters.",
                       },
                       validate: (value) => {
                         if (!/[A-Z]/.test(value)) {
@@ -134,9 +162,7 @@ export const RegisterForm = ({
 
                         return true;
                       },
-                      deps: "confirmPassword",
                     })}
-                    placeholder="Enter your password"
                     aria-invalid={errors.password ? true : undefined}
                     aria-describedby={
                       errors.password
@@ -160,54 +186,18 @@ export const RegisterForm = ({
                     )}
                   </InputGroupButton>
                 </InputGroup>
-                {errors.password ? (
+                {errors.password && (
                   <FieldError id="password-error">
                     {errors.password.message}
                   </FieldError>
-                ) : (
-                  <FieldDescription id="password-description">
-                    Must be at least 8 characters long and include an uppercase
-                    letter and a symbol.
-                  </FieldDescription>
-                )}
-              </Field>
-              <Field data-invalid={errors.confirmPassword ? true : undefined}>
-                <FieldLabel htmlFor="confirm-password">
-                  Confirm Password
-                </FieldLabel>
-                <Input
-                  id="confirm-password"
-                  type="password"
-                  {...register("confirmPassword", {
-                    required: "Please confirm your password",
-                    validate: (value) =>
-                      value === getValues("password") ||
-                      "Passwords do not match",
-                  })}
-                  placeholder="Re-enter your password"
-                  aria-invalid={errors.confirmPassword ? true : undefined}
-                  aria-describedby={
-                    errors.confirmPassword
-                      ? "confirm-password-error"
-                      : "confirm-password-description"
-                  }
-                />
-                {errors.confirmPassword ? (
-                  <FieldError id="confirm-password-error">
-                    {errors.confirmPassword.message}
-                  </FieldError>
-                ) : (
-                  <FieldDescription id="confirm-password-description">
-                    Please confirm your password.
-                  </FieldDescription>
                 )}
               </Field>
               <Field>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Signing up..." : "Sign up"}
+                  {isSubmitting ? "Creating..." : "Create account"}
                 </Button>
                 <FieldDescription className="text-center">
-                  Have an account? <Link to="/login">Log in</Link>
+                  Already have an account? <Link to="/login">Log in</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>

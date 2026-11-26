@@ -48,31 +48,37 @@ export const LoginForm = ({
     },
   });
 
-  const onSubmit = async (data: LoginFormValues) => {
-    console.log(data);
-  };
-
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card>
-        <CardHeader>
-          <CardTitle>Login to your account</CardTitle>
-          <CardDescription>
-            Enter your email or username below to login to your account
+        <CardHeader className="items-center gap-2">
+          <img
+            className="m-auto h-10 w-10 rounded-md"
+            src="/Logo.webp"
+            alt="Logo"
+          />
+          <CardTitle className="text-center text-xl">
+            Welcome to DAVL SOFT
+          </CardTitle>
+          <CardDescription className="text-center">
+            Enter your username and password to log in.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form onSubmit={handleSubmit(onSubmit)}>
+          <form onSubmit={handleSubmit(() => console.log("Clicked"))}>
             <FieldGroup>
-              <Field data-invalid={errors.identifier ? true : undefined}>
+              <Field
+                className="gap-2"
+                data-invalid={errors.identifier ? true : undefined}
+              >
                 <FieldLabel htmlFor="identifier">Username</FieldLabel>
                 <Input
                   id="identifier"
                   {...register("identifier", {
                     required: "Username or email is required",
                     minLength: {
-                      value: 3,
-                      message: "Must be at least 3 characters",
+                      value: 4,
+                      message: "Must be at least 4 characters",
                     },
                     setValueAs: (value: string) => value.trim(),
                     validate: (value) => {
@@ -84,24 +90,31 @@ export const LoginForm = ({
                       }
 
                       return (
-                        /^[a-zA-Z0-9_]{3,}$/.test(value) ||
-                        "Username must be at least 3 characters"
+                        /^[a-zA-Z0-9_]{4,}$/.test(value) ||
+                        "Username must be at least 4 characters"
                       );
                     },
                   })}
-                  placeholder="Enter your email or username"
+                  placeholder="Enter your username or email address"
                   aria-invalid={errors.identifier ? true : undefined}
                   aria-describedby={
                     errors.identifier ? "identifier-error" : undefined
                   }
                 />
-                {errors.identifier && (
+                {errors.identifier ? (
                   <FieldError id="identifier-error">
                     {errors.identifier.message}
                   </FieldError>
+                ) : (
+                  <FieldDescription id="identifier-description">
+                    You can use either your username or email address.
+                  </FieldDescription>
                 )}
               </Field>
-              <Field data-invalid={errors.password ? true : undefined}>
+              <Field
+                className="gap-2"
+                data-invalid={errors.password ? true : undefined}
+              >
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
                 </div>
@@ -128,7 +141,6 @@ export const LoginForm = ({
                         return true;
                       },
                     })}
-                    placeholder="Enter your password"
                     aria-invalid={errors.password ? true : undefined}
                     aria-describedby={
                       errors.password ? "password-error" : undefined
@@ -158,11 +170,11 @@ export const LoginForm = ({
               </Field>
               <Field>
                 <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Signing in..." : "Sign in"}
+                  {isSubmitting ? "Loging in ..." : "Log in"}
                 </Button>
                 <FieldDescription className="text-center">
                   Don&apos;t have an account?{" "}
-                  <Link to="/register">Sign up</Link>
+                  <Link to="/register">Create account</Link>
                 </FieldDescription>
               </Field>
             </FieldGroup>
